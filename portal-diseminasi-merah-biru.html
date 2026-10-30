@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1230">
+<title>CanvaGuru — Portal Diseminasi | SMK Negeri 5 Yogyakarta</title>
+<meta name="description" content="Portal diseminasi: Optimalisasi Canva dalam Mengembangkan Media Pembelajaran Interaktif bagi Guru SMK Negeri 5 Yogyakarta.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','system-ui','sans-serif'],head:['"Bricolage Grotesque"','"Plus Jakarta Sans"','sans-serif']}}}}</script>
+<style>
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+:focus-visible{outline:2px solid #e11d48;outline-offset:2px}
+/* halaman + transisi blur */
+.view{position:absolute;inset:0;overflow:hidden auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity .45s ease,filter .45s ease,transform .45s ease,visibility 0s .45s}
+.view.on{opacity:1;visibility:visible;transition-delay:0s}
+.view.out{opacity:0;filter:blur(18px);transform:scale(.96)}
+.view.in{opacity:0;filter:blur(18px);transform:scale(1.04)}
+.view::-webkit-scrollbar{width:6px}.view::-webkit-scrollbar-thumb{background:linear-gradient(#e11d48,#2563eb);border-radius:9px}
+.on:not(.in) .st{animation:up .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0)*80ms + 250ms)}
+@keyframes up{from{opacity:0;transform:translateY(28px) scale(.98);filter:blur(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes dr{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,-40px) scale(1.15)}}
+@keyframes pop{from{opacity:0;transform:scale(.9);filter:blur(8px)}}
+/* foto beranda & panitia */
+.ring{padding:6px;border-radius:9999px;background:conic-gradient(#e11d48,#2563eb,#e11d48);animation:spin 7s linear infinite}
+.ring>img{animation:spin 7s linear infinite reverse}
+.ring-box{padding:5px;border-radius:1rem;background:conic-gradient(#e11d48,#2563eb,#e11d48)}
+.ring-box>img{border-radius:.75rem}
+.fl{animation:fl 5.5s ease-in-out infinite}
+.glow{box-shadow:0 0 50px rgba(225,29,72,.35),0 0 90px rgba(37,99,235,.35)}
+.orbit{position:absolute;inset:-22px;border-radius:9999px;border:1.5px dashed rgba(37,99,235,.5);animation:spin 20s linear infinite}
+.orbit::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;border-radius:9999px;background:#e11d48;box-shadow:0 0 14px #e11d48}
+.tag{position:absolute;padding:.3rem .75rem;border-radius:9999px;font-size:.72rem;font-weight:700;color:#fff;background:linear-gradient(90deg,#e11d48,#2563eb);box-shadow:0 8px 20px -6px rgba(37,99,235,.6);animation:fl 4s ease-in-out infinite}
+/* komponen */
+.card{background:rgba(255,255,255,.78);border:1px solid rgba(37,99,235,.14);border-radius:1.25rem;box-shadow:0 12px 32px -14px rgba(30,58,138,.4);backdrop-filter:blur(10px);transition:box-shadow .3s,border-color .3s,background-color .4s}
+.card:hover{border-color:rgba(225,29,72,.4);box-shadow:0 18px 40px -14px rgba(225,29,72,.35)}
+.dark .card{background:rgba(14,22,60,.62);border-color:rgba(255,255,255,.1)}
+.nv,.fc{padding:.5rem .9rem;border-radius:9999px;font-size:.8rem;font-weight:600;white-space:nowrap;transition:all .25s}
+.nv:hover,.fc:hover{background:rgba(37,99,235,.14)}
+.fc{border:1px solid rgba(37,99,235,.25)}
+.nv.act,.fc.act{color:#fff;background:linear-gradient(90deg,#e11d48,#2563eb);box-shadow:0 6px 18px -6px rgba(225,29,72,.6)}
+.btn,.btn2{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:2.6rem;padding:.55rem 1.1rem;border-radius:.9rem;font-size:.85rem;font-weight:700;transition:transform .2s,box-shadow .2s}
+.btn{color:#fff;background:linear-gradient(100deg,#e11d48,#2563eb);box-shadow:0 10px 24px -10px rgba(225,29,72,.7)}
+.btn2{border:1.5px solid rgba(37,99,235,.45)}
+.btn:hover,.btn2:hover{transform:translateY(-2px)}
+.gt,.dark .gt{-webkit-background-clip:text;background-clip:text;color:transparent}
+.gt{background-image:linear-gradient(100deg,#1d4ed8,#e11d48)}
+.dark .gt{background-image:linear-gradient(100deg,#60a5fa,#fb7185)}
+.mu{color:#475569}.dark .mu{color:#a9b6d6}
+.sec{display:flex;align-items:center;gap:.6rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;margin-bottom:.9rem}
+.sec::before{content:"";width:6px;height:1.4rem;border-radius:9px;background:linear-gradient(#e11d48,#2563eb)}
+.bar{height:.55rem;border-radius:9px;background:rgba(100,116,139,.25);overflow:hidden}
+.bar>i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#2563eb,#e11d48);transition:width 1.3s cubic-bezier(.2,.8,.2,1) .6s}
+.on:not(.in) .bar>i{width:var(--w)}
+#lb,#qr{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:1rem;background:rgba(5,8,25,.78);backdrop-filter:blur(10px)}
+#lb.show,#qr.show{display:grid}
+#lb.show>div,#qr.show>div{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body class="flex flex-col font-sans bg-slate-50 text-slate-800 dark:bg-[#070b1f] dark:text-slate-100 transition-colors duration-500" style="height:100dvh">
+
+<!-- latar belakang animasi (berubah tiap halaman) -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+  <div class="absolute -top-32 -left-24 w-[28rem] h-[28rem] rounded-full bg-rose-500/25 blur-3xl" style="animation:dr 14s ease-in-out infinite"></div>
+  <div class="absolute -bottom-40 -right-24 w-[32rem] h-[32rem] rounded-full bg-blue-600/25 blur-3xl" style="animation:dr 18s ease-in-out infinite reverse"></div>
+  <canvas id="bg" class="absolute inset-0"></canvas>
+</div>
+
+<header class="relative z-40 shrink-0 border-b border-blue-500/15 bg-white/70 dark:bg-[#0a1230]/70 backdrop-blur-xl">
+  <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <button data-go="beranda" class="order-1 flex items-center gap-2.5 mr-auto lg:mr-0" aria-label="CanvaGuru, kembali ke beranda">
+      <span class="w-9 h-9 rounded-xl grid place-items-center text-white font-bold bg-gradient-to-br from-rose-600 to-blue-600">✦</span>
+      <span class="text-left leading-tight"><b class="font-head text-base block">CanvaGuru.</b><small class="text-[10px] mu">Portal Diseminasi</small></span>
+    </button>
+    <button id="tg" class="order-2 lg:order-3 w-10 h-10 rounded-full border border-blue-500/30 grid place-items-center text-lg hover:bg-blue-500/10 transition" aria-label="Ganti mode gelap atau terang"></button>
+    <nav id="nav" class="order-3 w-full lg:order-2 lg:w-auto lg:flex-1 flex gap-1 overflow-x-auto lg:justify-center" aria-label="Navigasi utama"></nav>
+  </div>
+</header>
+
+<main class="relative z-10 flex-1 min-h-0">
+
+<!-- ============ BERANDA ============ -->
+<section id="beranda" class="view on"><div class="max-w-6xl mx-auto px-6 py-8 md:py-12">
+  <div class="grid md:grid-cols-[1fr_1.15fr] gap-14 items-center md:min-h-[68vh]">
+    <div class="st relative mx-auto my-4 w-60 h-60 sm:w-80 sm:h-80 lg:w-[26rem] lg:h-[26rem]">
+      <div class="orbit"></div>
+      <div class="fl w-full h-full"><div class="ring glow w-full h-full">
+        <!-- GANTI FOTO: src di bawah -->
+        <img src="beranda.png" alt="Guru-guru SMK Negeri 5 Yogyakarta mengikuti pelatihan media ajar berbasis Canva" class="w-full h-full rounded-full object-cover">
+      </div></div>
+      <span class="tag" style="top:2%;left:-6%">Canva</span>
+      <span class="tag" style="top:16%;right:-8%;animation-delay:-1s">Media Interaktif</span>
+      <span class="tag" style="top:50%;left:-9%;animation-delay:-2.2s">Guru Inovatif</span>
+      <span class="tag" style="bottom:12%;right:-5%;animation-delay:-.6s">PPG</span>
+      <span class="tag" style="bottom:-2%;left:14%;animation-delay:-1.6s">SMKN 5 Yogyakarta</span>
+    </div>
+    <div>
+      <p class="st inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-rose-500/30 bg-rose-500/10"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>Diseminasi Canva · SMKN 5 Yogyakarta</p>
+      <h1 class="st font-head font-extrabold gt text-3xl sm:text-4xl lg:text-[2.9rem] leading-[1.12] mt-4 pb-1">Optimalisasi Canva dalam Mengembangkan Media Pembelajaran Interaktif bagi Guru SMK Negeri 5 Yogyakarta</h1>
+      <p class="st mu mt-5 max-w-xl">CanvaGuru adalah portal diseminasi Proyek Kepemimpinan PPG di SMKN 5 Yogyakarta — ruang untuk menelusuri kegiatan, mengenal tim pelaksana, menyimak dokumentasi, dan menjelajahi karya media ajar guru berbasis Canva.</p>
+      <div class="st mt-7 flex flex-wrap gap-3"><button class="btn" data-go="karya">Jelajahi Karya Guru</button><button class="btn2" data-go="tentang">Tentang Kegiatan</button></div>
+    </div>
+  </div>
+  <div class="mt-16">
+    <h2 class="st sec text-2xl">Ringkasan Portal</h2>
+    <p class="st mu -mt-2 mb-6 text-sm">Sekilas isi setiap halaman. Pilih salah satu untuk membukanya.</p>
+    <div id="sum" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+  <footer class="mt-16 pb-6 text-center text-xs mu">© <span id="yr"></span> CanvaGuru — Portal Diseminasi · SMKN 5 Yogyakarta.</footer>
+</div></section>
+
+<!-- ============ TENTANG KEGIATAN ============ -->
+<section id="tentang" class="view"><div class="max-w-5xl mx-auto px-6 py-8 space-y-7">
+  <div class="st"><h2 class="font-head font-extrabold gt text-3xl md:text-4xl pb-1">Tentang Kegiatan</h2><p class="mu mt-1">Diseminasi Canva untuk Guru SMKN 5 Yogyakarta — bagian dari Proyek Kepemimpinan PPG.</p></div>
+  <article class="card st p-6 md:p-8"><h3 class="sec">Latar Belakang</h3>
+    <p class="mu leading-relaxed">Perkembangan teknologi pembelajaran menuntut guru untuk menghadirkan media ajar yang tidak hanya informatif, tetapi juga menarik secara visual. Selama ini, banyak guru menyusun media ajar secara manual sehingga waktu yang dibutuhkan relatif lama dan tampilan yang dihasilkan belum optimal.</p>
+    <p class="mu leading-relaxed mt-3">Canva hadir sebagai platform desain grafis yang mudah digunakan dan menyediakan banyak templat siap pakai. Namun, kemampuan guru dalam memanfaatkannya secara terstruktur masih beragam. Kondisi inilah yang melatarbelakangi perlunya kegiatan diseminasi sebagai bentuk penguatan literasi digital guru di SMKN 5 Yogyakarta.</p></article>
+  <article class="card st p-6 md:p-8"><h3 class="sec">Tujuan</h3><ul id="tujuan" class="grid md:grid-cols-2 gap-x-8 gap-y-3"></ul></article>
+  <div class="st"><h3 class="sec">Manfaat</h3><div id="manfaat" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div></div>
+  <article class="card st p-6 md:p-8"><h3 class="sec">Indikator Keberhasilan</h3><div id="indikator" class="grid md:grid-cols-2 gap-x-10 gap-y-5"></div></article>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <article class="card st p-6"><h3 class="sec">Anggaran</h3><div id="anggaran"></div></article>
+    <article class="card st p-6"><h3 class="sec">Rundown Acara</h3><ol id="rundown" class="ml-1"></ol></article>
+  </div>
+</div></section>
+
+<!-- ============ STRUKTUR PANITIA ============ -->
+<section id="panitia" class="view"><div class="max-w-6xl mx-auto px-6 py-8">
+  <div class="st"><h2 class="font-head font-extrabold gt text-3xl md:text-4xl pb-1">Struktur Panitia</h2><p class="mu mt-1">Delapan personel dengan peran dan tanggung jawab yang saling melengkapi.</p></div>
+  <div id="pg" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8"></div>
+</div></section>
+
+<!-- ============ GALERI KEGIATAN ============ -->
+<section id="galeri" class="view"><div class="max-w-6xl mx-auto px-6 py-8">
+  <div class="st"><h2 class="font-head font-extrabold gt text-3xl md:text-4xl pb-1">Galeri Kegiatan</h2><p class="mu mt-1">Klik foto untuk memperbesar, lalu unduh jika diperlukan.</p></div>
+  <div id="gf" class="st flex flex-wrap gap-2 mt-6"></div>
+  <div id="gg" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+</div></section>
+
+<!-- ============ KARYA GURU ============ -->
+<section id="karya" class="view"><div class="max-w-6xl mx-auto px-6 py-8">
+  <div class="st"><h2 class="font-head font-extrabold gt text-3xl md:text-4xl pb-1">Karya Guru</h2><p class="mu mt-1">Pratinjau website media ajar per mata pelajaran. Tekan QR Code untuk membukanya lewat ponsel.</p></div>
+  <div class="st mt-6 flex flex-col md:flex-row gap-3 md:items-center">
+    <input id="kq" type="search" placeholder="Cari judul, penulis, atau mata pelajaran…" aria-label="Cari karya" class="md:w-80 px-4 py-2.5 rounded-full text-sm bg-white/80 dark:bg-white/5 border border-blue-500/25 outline-none focus:border-rose-500">
+    <div id="kf" class="flex flex-wrap gap-2"></div>
+  </div>
+  <div id="kg" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6"></div>
+  <p id="ke" class="hidden mt-8 text-center mu">Tidak ada karya yang cocok. Ubah kata kunci atau pilih mata pelajaran lain.</p>
+</div></section>
+
+<!-- ============ SERTIFIKAT ============ -->
+<section id="sertifikat" class="view"><div class="max-w-5xl mx-auto px-6 py-8">
+  <div class="st"><h2 class="font-head font-extrabold gt text-3xl md:text-4xl pb-1">Sertifikat</h2><p class="mu mt-1">Lihat dan unduh sertifikat kegiatan.</p></div>
+  <div id="sg" class="grid md:grid-cols-2 gap-6 mt-8"></div>
+</div></section>
+
+</main>
+
+<!-- lightbox foto -->
+<div id="lb" role="dialog" aria-modal="true" aria-label="Pratinjau gambar"><div class="relative max-w-4xl w-full">
+  <img id="lbi" alt="" class="w-full max-h-[72vh] object-contain rounded-2xl shadow-2xl bg-black/30">
+  <div class="mt-3 flex flex-wrap items-center justify-between gap-3 text-white"><p id="lbt" class="font-semibold"></p>
+    <div class="flex gap-2"><button id="lbd" class="btn">⬇ Unduh</button><button class="btn2 !text-white !border-white/40" data-x>Tutup</button></div></div>
+</div></div>
+<!-- modal QR -->
+<div id="qr" role="dialog" aria-modal="true" aria-label="QR code karya"><div class="card !bg-white !text-slate-800 p-6 text-center max-w-xs w-full">
+  <h3 id="qt" class="font-head font-bold leading-snug"></h3><p class="text-xs text-slate-500 mb-4 mt-1">Scan untuk membuka di ponsel Anda</p>
+  <div id="qc" class="inline-block p-3 bg-white rounded-xl border border-slate-200"></div>
+  <p id="qu" class="text-[11px] break-all mt-3 text-slate-500"></p><button class="btn mt-4" data-x>Tutup</button>
+</div></div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const drive=(id,w=1200)=>`https://drive.google.com/thumbnail?id=${id}&sz=w${w}`,dl=id=>`https://drive.google.com/uc?export=download&id=${id}`;
+const ph=(s,w=900,h=600)=>`https://picsum.photos/seed/${s}/${w}/${h}`,av=n=>`https://i.pravatar.cc/360?img=${n}`;
+const src=(o,w)=>o.id?drive(o.id,w):o.img,dlu=o=>o.id?dl(o.id):o.img;
+
+/* ===== DATA ===== */
+/* Galeri & Sertifikat: isi "id" dengan ID file Google Drive (file harus dibagikan "Siapa saja yang memiliki link").
+   Selama "id" kosong, foto dummy di "img" yang dipakai. */
+const GALERI=[
+ {id:'',c:'diskusi',img:ph('gal1'),t:'Diskusi Orientasi Tim Pelaksana'},
+ {id:'',c:'diskusi',img:ph('gal2'),t:'Koordinasi Kurikulum dengan Guru'},
+ {id:'',c:'diseminasi',img:ph('gal3'),t:'Sesi Materi Canva untuk Media Ajar'},
+ {id:'',c:'diseminasi',img:ph('gal4'),t:'Workshop Praktik Penyusunan Media'},
+ {id:'',c:'gelar',img:ph('gal5'),t:'Pameran Karya Media Ajar'},
+ {id:'',c:'gelar',img:ph('gal6'),t:'Penyerahan Sertifikat dan Apresiasi'}];
+const GCAT=[['all','Semua Momen'],['diskusi','Diskusi & Orientasi'],['diseminasi','Diseminasi & Workshop'],['gelar','Gelar Karya']];
+const SERTIF=[
+ {id:'',img:ph('sert1',1000,700),t:'Sertifikat Peserta',s:'Diberikan kepada guru peserta kegiatan diseminasi Canva sebagai bukti keikutsertaan dan penyelesaian rangkaian pelatihan.'},
+ {id:'',img:ph('sert2',1000,700),t:'Sertifikat Panitia',s:'Diberikan kepada tim pelaksana sebagai penghargaan atas kontribusi dalam penyelenggaraan kegiatan diseminasi.'}];
+const PANITIA=[
+ {n:'Ilham Kurnia Septiadi',r:'Ketua Pelaksana',id:'',img:av(12),t:'Memimpin jalannya kelompok, ...'},
+ {n:'Rizky Sawitri',r:'Sekretaris',id:'',img:av(5),t:'Mengurus administrasi kegiatan, ...'},
+ {n:'Etrì Suryani',r:'Bendahara',id:'',img:av(47),t:'Mengelola anggaran dana kegiatan, ...'},
+ {n:'Ema Humaera',r:'Acara',id:'',img:av(32),t:'Merancang susunan acara (rundown), ...'},
+ {n:'Adam Presetia',r:'Dokumentasi dan Editing',id:'',img:av(15),t:'Mengabadikan momen kegiatan ...'},
+ {n:'Muhammad Ridho',r:'Dokumentasi dan Editing',id:'',img:av(60),t:'Berkolaborasi dalam mendokumentasikan ...'},
+ {n:'Ajib Alfarizi',r:'Perlengkapan',id:'',img:av(8),t:'Menyiapkan segala kebutuhan sarana ...'},
+ {n:'Yohanes Jelly Sonda',r:'Perlengkapan',id:'',img:av(52),t:'Membantu penyediaan dan penataan ...'}
+];
+const KARYA=[
+ {t:'Sistem Tata Surya Interaktif',a:'Etri Suryani',m:'IPA',g:'Kelas VII',img:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=70',u:'https://www.canva.com/design/DAF1IPA001/view',d:'Media ajar presentasi interaktif yang menampilkan susunan tata surya, karakteristik setiap planet, serta animasi gerak revolusi dan rotasi.'},
+ {t:'Bilangan Bulat dalam Kehidupan Sehari-hari',a:'Rizky Sawitri',m:'Matematika',g:'Kelas VII',img:'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=70',u:'https://www.canva.com/design/DAF2MTK002/view',d:'Media ajar berbasis infografis dan kuis interaktif yang mengaitkan operasi bilangan bulat dengan situasi nyata.'},
+ {t:'Teks Prosedur: Resep dan Petunjuk Praktis',a:'Ema Humaera',m:'B. Indonesia',g:'Kelas X',img:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=70',u:'https://www.canva.com/design/DAF3BIN003/view',d:'Media ajar visual yang menyajikan struktur teks prosedur, contoh resep, serta latihan menyusun langkah secara runtut.'},
+ {t:'Introducing Myself: Everyday Conversation',a:'Adam Presetia',m:'B. Inggris',g:'Kelas X',img:'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=900&q=70',u:'https://www.canva.com/design/DAF4ENG004/view',d:'Media ajar berisi kartu percakapan, contoh dialog, dan latihan pelafalan untuk memperkenalkan diri dalam bahasa Inggris.'}];
+const TUJUAN=['Meningkatkan pemahaman guru tentang pemanfaatan Canva sebagai alat penyusun media ajar.','Melatih guru membuat media ajar visual yang sesuai dengan karakteristik mata pelajaran.','Menghasilkan kumpulan media ajar yang dapat digunakan bersama oleh komunitas guru sekolah.','Menyediakan sistem dokumentasi karya yang mudah diakses melalui QR code.'];
+const MANFAAT=[
+ ['Bagi Guru',['Lebih cepat menyusun media ajar','Meningkatkan kualitas tampilan materi','Memiliki arsip karya yang terdokumentasi']],
+ ['Bagi Murid',['Materi lebih mudah dipahami','Pembelajaran terasa lebih menarik','Visual membantu pemahaman konsep']],
+ ['Bagi SMKN 5',['Tersedianya bank media ajar sekolah','Mendorong budaya berbagi antar guru','Mendukung program digitalisasi sekolah']],
+ ['Bagi Mahasiswa PPG',['Melatih kemampuan memimpin kegiatan','Menambah pengalaman diseminasi','Memperkuat kolaborasi dengan sekolah']]];
+/* Angka & jadwal di bawah adalah contoh (dummy) — silakan sesuaikan */
+const INDIKATOR=[['Kehadiran guru peserta pelatihan',80],['Guru menghasilkan minimal satu media ajar Canva',90],['Karya memiliki tautan website dan QR code',100],['Peserta puas terhadap pelaksanaan kegiatan',85]];
+const ANGGARAN=[['Cetak banner dan X-banner',150000],['Handbook tutorial Canva',300000],['Konsumsi peserta dan panitia',750000],['Dokumentasi foto dan video',200000],['Perlengkapan dan ATK',150000]];
+const RUNDOWN=[['07.30','Registrasi peserta'],['08.00','Pembukaan dan sambutan'],['08.30','Pemaparan materi: Canva untuk media interaktif'],['09.45','Praktik membuat media ajar'],['11.15','Presentasi dan gelar karya'],['11.45','Penyerahan sertifikat dan penutupan']];
+const VIEWS=[['beranda','Beranda'],['tentang','Tentang Kegiatan'],['panitia','Struktur Panitia'],['galeri','Galeri Kegiatan'],['karya','Karya Guru'],['sertifikat','Sertifikat']];
+const SUM=[
+ ['tentang','Tentang Kegiatan','Latar belakang, tujuan, manfaat, indikator keberhasilan, anggaran, dan rundown acara.','6 bagian'],
+ ['panitia','Struktur Panitia','Para personel pelaksana beserta peran dan tanggung jawabnya.',PANITIA.length+' personel'],
+ ['galeri','Galeri Kegiatan','Dokumentasi momen kegiatan. Klik foto untuk memperbesar dan mengunduh.',GALERI.length+' foto'],
+ ['karya','Karya Guru','Pratinjau website media ajar per mata pelajaran, lengkap dengan QR code.',KARYA.length+' karya'],
+ ['sertifikat','Sertifikat','Sertifikat kegiatan yang dapat dilihat dan diunduh.',SERTIF.length+' berkas']];
+const LISTS={G:GALERI,S:SERTIF};
+const rp=n=>'Rp'+n.toLocaleString('id-ID');
+const ck='<span class="w-5 h-5 mt-0.5 shrink-0 rounded-full grid place-items-center text-[10px] text-white bg-gradient-to-br from-rose-600 to-blue-600">✓</span>';
+
+/* ===== RENDER ===== */
+function chips(el,list,cur,fn){el.innerHTML=list.map(([k,l])=>`<button data-k="${k}" class="fc ${k===cur?'act':''}">${l}</button>`).join('');$$('button',el).forEach(b=>b.onclick=()=>fn(b.dataset.k))}
+$('#yr').textContent=new Date().getFullYear();
+$('#sum').innerHTML=SUM.map(([id,t,d,s],i)=>`<button data-go="${id}" class="card st p-5 text-left flex flex-col gap-2" style="--i:${i}"><b class="font-head text-lg">${t}</b><span class="text-sm mu flex-1">${d}</span><span class="font-head font-extrabold gt text-xl">${s}</span></button>`).join('');
+$('#tujuan').innerHTML=TUJUAN.map(t=>`<li class="flex gap-3 mu">${ck}<span>${t}</span></li>`).join('');
+$('#manfaat').innerHTML=MANFAAT.map(([h,l],i)=>`<article class="card st p-5" style="--i:${i}"><h4 class="font-head font-bold gt text-lg">${h}</h4><ul class="mt-3 space-y-2.5">${l.map(x=>`<li class="flex gap-2.5 text-sm mu">${ck}<span>${x}</span></li>`).join('')}</ul></article>`).join('');
+$('#indikator').innerHTML=INDIKATOR.map(([t,v])=>`<div><div class="flex justify-between gap-3 text-sm mb-2"><span>${t}</span><b class="gt shrink-0">Target ${v}%</b></div><div class="bar"><i style="--w:${v}%"></i></div></div>`).join('');
+$('#anggaran').innerHTML=ANGGARAN.map(([t,v])=>`<div class="flex justify-between gap-4 py-2.5 border-b border-blue-500/15 text-sm"><span class="mu">${t}</span><b>${rp(v)}</b></div>`).join('')+`<div class="flex justify-between gap-4 mt-3 px-4 py-3 rounded-xl text-white font-bold bg-gradient-to-r from-rose-600 to-blue-600"><span>Total</span><span>${rp(ANGGARAN.reduce((a,b)=>a+b[1],0))}</span></div>`;
+$('#rundown').innerHTML=RUNDOWN.map(([w,t])=>`<li class="relative pl-6 pb-5 last:pb-0 border-l-2 border-blue-500/30 ml-2"><span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-500/20"></span><b class="gt text-sm">${w}</b><p class="text-sm mu">${t}</p></li>`).join('');
+$('#pg').innerHTML=PANITIA.map((o,i)=>`<article class="card st p-5 text-center" style="--i:${i}">
+  <div class="fl" style="animation-delay:${-i*.7}s">
+    <div class="ring-box glow w-full aspect-[9/16] overflow-hidden">
+      <img src="${src(o,500)}" alt="Foto ${o.n}" loading="lazy" class="w-full h-full object-cover">
+    </div>
+  </div>
+  <h3 class="font-head font-bold text-lg mt-4 leading-tight">${o.n}</h3>
+  <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-blue-600">${o.r}</span>
+  <p class="text-sm mu mt-3 text-left"><b class="text-xs">Tanggung jawab</b><br>${o.t}</p>
+</article>`).join('');
+let gc='all',kf='Semua',kq='';
+function gR(){chips($('#gf'),GCAT,gc,k=>{gc=k;gR()});$('#gg').innerHTML=GALERI.map((o,i)=>[o,i]).filter(([o])=>gc==='all'||o.c===gc).map(([o,i],n)=>`<button data-o="G:${i}" class="card st group relative overflow-hidden aspect-[4/3]" style="--i:${n}" aria-label="Perbesar: ${o.t}"><img src="${src(o,700)}" alt="${o.t}" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-110"><span class="absolute inset-x-0 bottom-0 p-3 text-left text-white text-sm font-semibold bg-gradient-to-t from-blue-950/90 to-transparent translate-y-2 group-hover:translate-y-0 transition">${o.t}</span></button>`).join('')}
+function kR(){const S=['Semua',...new Set(KARYA.map(k=>k.m))];chips($('#kf'),S.map(s=>[s,s]),kf,k=>{kf=k;kR()});
+ const L=KARYA.map((o,i)=>[o,i]).filter(([o])=>(kf==='Semua'||o.m===kf)&&(o.t+o.a+o.m).toLowerCase().includes(kq));
+ $('#kg').innerHTML=L.map(([o,i],n)=>`<article class="card st overflow-hidden flex flex-col" style="--i:${n}"><a href="${o.u}" target="_blank" rel="noopener" class="group block relative overflow-hidden aspect-[16/10]" aria-label="Buka website ${o.t}"><img src="${o.img}" alt="Pratinjau ${o.t}" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-110"><span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold text-white bg-rose-600">${o.m}</span></a><div class="p-4 flex flex-col gap-2 flex-1"><h3 class="font-head font-bold leading-snug">${o.t}</h3><p class="text-xs mu">${o.a} · ${o.g}</p><p class="text-sm mu flex-1">${o.d}</p><div class="flex gap-2 pt-2"><a class="btn flex-1" href="${o.u}" target="_blank" rel="noopener">Buka Website</a><button class="btn2" data-q="${i}">QR Code</button></div></div></article>`).join('');
+ $('#ke').classList.toggle('hidden',L.length>0)}
+$('#sg').innerHTML=SERTIF.map((o,i)=>`<article class="card st overflow-hidden" style="--i:${i}"><button data-o="S:${i}" class="group block w-full aspect-[10/7] overflow-hidden" aria-label="Lihat ${o.t}"><img src="${src(o,900)}" alt="${o.t}" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-105"></button><div class="p-5"><h3 class="font-head font-bold text-lg">${o.t}</h3><p class="text-sm mu mt-1">${o.s}</p><div class="flex gap-2 mt-4"><button class="btn flex-1" data-o="S:${i}">Lihat</button><button class="btn2" data-d="S:${i}">Unduh</button></div></div></article>`).join('');
+gR();kR();$('#kq').oninput=e=>{kq=e.target.value.trim().toLowerCase();kR()};
+$$('.view').forEach(v=>$$('.st',v).forEach((e,i)=>{if(!e.style.getPropertyValue('--i'))e.style.setProperty('--i',Math.min(i,10))}));
+
+/* ===== LIGHTBOX, UNDUH, QR ===== */
+let cur=null;
+async function dlf(url,name){try{const r=await fetch(url);if(!r.ok)throw 0;const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)}catch(e){window.open(url,'_blank','noopener')}}
+function openLb(o){cur=o;$('#lbi').src=src(o,1600);$('#lbi').alt=o.t;$('#lbt').textContent=o.t;$('#lb').classList.add('show')}
+function openQr(o){$('#qt').textContent=o.t;$('#qu').textContent=o.u;const c=$('#qc');c.innerHTML='';if(window.QRCode)new QRCode(c,{text:o.u,width:220,height:220,colorDark:'#0b1a4a',colorLight:'#ffffff'});$('#qr').classList.add('show')}
+const shut=()=>$$('#lb,#qr').forEach(m=>m.classList.remove('show'));
+$('#lbd').onclick=()=>cur&&dlf(dlu(cur),cur.t.replace(/\s+/g,'-')+'.jpg');
+addEventListener('keydown',e=>e.key==='Escape'&&shut());
+document.addEventListener('click',e=>{const T=e.target;
+ if(T.id==='lb'||T.id==='qr'||T.closest('[data-x]'))return shut();
+ const g=T.closest('[data-go]');if(g)return go(g.dataset.go);
+ const o=T.closest('[data-o]');if(o){const[l,i]=o.dataset.o.split(':');return openLb(LISTS[l][i])}
+ const d=T.closest('[data-d]');if(d){const[l,i]=d.dataset.d.split(':'),it=LISTS[l][i];return dlf(dlu(it),it.t.replace(/\s+/g,'-')+'.jpg')}
+ const q=T.closest('[data-q]');if(q)openQr(KARYA[q.dataset.q])});
+
+/* ===== NAVIGASI (tanpa scroll antar halaman, transisi blur) ===== */
+const nav=$('#nav');nav.innerHTML=VIEWS.map(([id,l])=>`<button class="nv" data-go="${id}">${l}</button>`).join('');
+function mark(id){$$('.nv',nav).forEach(b=>{const a=b.dataset.go===id;b.classList.toggle('act',a);a?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current');if(a)b.scrollIntoView({inline:'center',block:'nearest'})})}
+let at='beranda',busy=false;
+function go(id){if(id===at||busy)return;busy=true;const o=$('#'+at),n=$('#'+id);o.classList.add('out');mark(id);setBg(id);
+ setTimeout(()=>{o.classList.remove('on','out');n.scrollTop=0;n.classList.add('on','in');void n.offsetWidth;n.classList.remove('in');at=id;busy=false},420)}
+mark('beranda');
+
+/* ===== MODE GELAP / TERANG ===== */
+const root=document.documentElement,tg=$('#tg');
+function theme(d){root.classList.toggle('dark',d);tg.textContent=d?'☀️':'🌙';try{localStorage.setItem('th',d?'d':'l')}catch(e){}}
+let sv=null;try{sv=localStorage.getItem('th')}catch(e){}
+theme(sv?sv==='d':matchMedia('(prefers-color-scheme: dark)').matches);
+tg.onclick=()=>theme(!root.classList.contains('dark'));
+
+/* ===== LATAR BELAKANG ANIMASI (beda tiap halaman) ===== */
+const cv=$('#bg'),cx=cv.getContext('2d'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const MODES={beranda:{n:46,vx:.25,vy:-.2,r:[2,7],s:'c'},tentang:{n:40,vx:0,vy:-.7,r:[3,9],s:'c'},panitia:{n:55,vx:.35,vy:.35,r:[1.5,3],s:'n'},galeri:{n:34,vx:.6,vy:.3,r:[4,10],s:'q'},karya:{n:60,vx:0,vy:.5,r:[1.5,4],s:'c'},sertifikat:{n:70,vx:.2,vy:.9,r:[3,6],s:'q'}};
+let W,H,P=[],M=MODES.beranda;
+function mk(){P=Array.from({length:M.n},(_,i)=>({x:Math.random()*W,y:Math.random()*H,r:M.r[0]+Math.random()*(M.r[1]-M.r[0]),a:Math.random()*6.3,k:.5+Math.random(),c:i%2?'225,29,72':'37,99,235'}))}
+function setBg(id){M=MODES[id];mk()}
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+function tick(){cx.clearRect(0,0,W,H);const al=root.classList.contains('dark')?.55:.4;
+ for(const p of P){p.a+=.012;p.x+=(M.vx+Math.sin(p.a)*.25)*p.k;p.y+=(M.vy+Math.cos(p.a)*.15)*p.k;
+  if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+  cx.fillStyle=`rgba(${p.c},${al})`;
+  if(M.s==='q'){cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillRect(-p.r,-p.r,p.r*2,p.r*2);cx.restore()}
+  else{cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fill()}}
+ if(M.s==='n')for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const d=Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y);if(d<130){cx.strokeStyle=`rgba(99,102,241,${(1-d/130)*al*.8})`;cx.beginPath();cx.moveTo(P[i].x,P[i].y);cx.lineTo(P[j].x,P[j].y);cx.stroke()}}
+ if(!RM)requestAnimationFrame(tick)}
+addEventListener('resize',()=>{rs();mk()});rs();mk();tick();
+</script>
+</body>
+</html>
